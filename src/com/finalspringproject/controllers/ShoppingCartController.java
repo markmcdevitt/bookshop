@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +22,8 @@ import com.finalspringproject.entity.PurchaseHistory;
 import com.finalspringproject.entity.ShoppingCart;
 import com.finalspringproject.entity.Stock;
 import com.finalspringproject.entity.User;
+import com.finalspringproject.memento.Address;
+import com.finalspringproject.memento.Address.Memento;
 import com.finalspringproject.service.BookService;
 import com.finalspringproject.service.ShoppingCartService;
 import com.finalspringproject.service.UsersService;
@@ -32,6 +35,10 @@ public class ShoppingCartController {
 	private String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
 	private BookService bookService;
 	private UsersService userService;
+	private Address address = new Address();
+	private List<Address.Memento> savedAddress = new ArrayList<Address.Memento>();
+
+
 
 	@RequestMapping(value = "/addtoshoppingcart/{title}")
 	public String addtoshoppingcart(@PathVariable String title, Model model, Principal principal,
@@ -112,11 +119,20 @@ public class ShoppingCartController {
 			@RequestParam(value = "cvv") String cvv, @RequestParam(value = "expiry-month") String expiryMonth,
 			@RequestParam(value = "expiry-year") String expiryYear) {
 
-		System.out.println("cardHolderName: " + cardHolderName + " cardNumber: " + cardNumber + " cvv: " + cvv
-				+ " expiryMonth: " + expiryMonth + " expiryYear:" + expiryYear + " address: " + address);
-
 		User user = userService.getUser(principal.getName());
 		ShoppingCart shoppingCart = user.getShoppingCart();
+		
+		
+		Address addressClass = new Address();
+		
+		addressClass.setAddress(user.getShippingAddress());
+		savedAddress.add(addressClass.saveToMemento());
+		
+		addressClass.setAddress(address);
+		savedAddress.add(addressClass.saveToMemento());
+		
+		
+		
 		for (LineItem lineItem : shoppingCart.getLineItem()) {
 			int quan = lineItem.getQuantity();
 			Book book = lineItem.getBook();
@@ -149,11 +165,32 @@ public class ShoppingCartController {
 
 		List<User> userList = new ArrayList<User>();
 		userList.add(user);
+		model.addAttribute("savedAddress",savedAddress);
 		model.addAttribute("user", userList);
 		return "receipt";
 
 	}
 
+	@RequestMapping(value="/newaddress")
+	public String newAddress(Model model, Principal principal){
+
+		User user = userService.getUser(principal.getName());
+		user.setShippingAddress(address.restoreFromMemento(savedAddress.get(1)));
+		userService.saveOrUpdate(user);
+		return "home";
+		
+	}
+	
+	@RequestMapping(value="/restoreaddress")
+	public String restoreAddress(Model model, Principal principal){
+		
+		User user = userService.getUser(principal.getName());
+		user.setShippingAddress(address.restoreFromMemento(savedAddress.get(0)));
+		userService.saveOrUpdate(user);
+		return "home";
+		
+	}
+	
 	@RequestMapping(value = "/shippingaddress")
 	public String shippingaddress(Model model, Principal principal) {
 		User user = userService.getUser(principal.getName());

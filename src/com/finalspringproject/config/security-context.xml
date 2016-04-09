@@ -64,6 +64,15 @@
 			access="isAuthenticated()" />
 		<security:intercept-url pattern="/shippingaddress"
 			access="isAuthenticated()" />
+		<security:intercept-url pattern="/restoreaddress"
+			access="isAuthenticated()" />
+		<security:intercept-url pattern="/restoreaddress"
+			access="isAuthenticated()" />
+		<security:intercept-url pattern="/newaddress"
+			access="isAuthenticated()" />	
+				
+			
+
 
 		<security:intercept-url pattern="/" access="permitAll" />
 		<security:intercept-url pattern="/loggedout"

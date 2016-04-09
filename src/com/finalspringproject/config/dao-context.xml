@@ -44,6 +44,7 @@
 					<value>com.finalspringproject.dao</value>
 					<value>com.finalspringproject.entity</value>
 					<value>com.finalspringproject.strategy</value>
+					<value>com.finalspringproject.memento</value>
 				</list>
 			</property>
 		</bean>

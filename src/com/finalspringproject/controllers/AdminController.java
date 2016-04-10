@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -53,17 +55,15 @@ public class AdminController {
 	@RequestMapping("/allenabledusers")
 	public String allAdminUsers(Model model) {
 
-		
-
+		allAdminUsers.clear();
 		Iterator itr = adminService.createIterator();
-		Iterator itr2 = adminService.createIterator();
-
-		allAdminUsers.addAll(iterateList(itr));
-		allAdminUsers.addAll(iterateList(itr2));
+		Iterator itr2 = enabledUserService.createIterator();
+		
+		iterateList(itr);
+		iterateList(itr2);
 		
 		model.addAttribute("users", allAdminUsers);
 		return "admin";
-
 	}
 
 	@RequestMapping("/admin")
@@ -111,7 +111,7 @@ public class AdminController {
 
 	}
 
-	public List<User> iterateList(Iterator itr){
+	public List<User> iterateList(Iterator itr) {
 		while (itr.hasNext()) {
 			User i = (User) itr.next();
 

@@ -70,14 +70,14 @@ public class UsersDao {
 
 	public List<User> getAllAdminUsers() {
 		Criteria criteria = session().createCriteria(User.class, "user");
-		criteria.add(Restrictions.like("user.authority", "ROLE_ADMIN", MatchMode.ANYWHERE));
+		criteria.add(Restrictions.like("user.authority", "ROLE_ADMIN", MatchMode.EXACT));
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();	
 	}
 
 	public List<User> getAllNormalUsers() {
 		Criteria criteria = session().createCriteria(User.class, "user");
-		criteria.add(Restrictions.like("user.authority", "ROLE_USER", MatchMode.ANYWHERE));
+		criteria.add(Restrictions.like("user.authority", "ROLE_USER", MatchMode.EXACT));
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();	
 	}

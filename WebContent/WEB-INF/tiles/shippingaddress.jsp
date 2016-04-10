@@ -34,8 +34,8 @@
 								<div class="form-group">
 									<label class="col-md-3 control-label">Address</label>
 									<div class="col-md-9">
-										<textarea class="form-control"
-											name="address" rows="5" cols="5">${user.shippingAddress}</textarea>
+										<textarea class="form-control" name="address" rows="5"
+											cols="5">${user.shippingAddress}</textarea>
 										<br />
 									</div>
 								</div>
@@ -44,7 +44,7 @@
 									<label class="col-md-3 control-label">Total Price</label>
 									<div class="col-md-9">
 										<input class="form-control"
-											value="${user.shoppingCart.totalCost}" type="text" readonly/>
+											value="${user.shoppingCart.totalCost}" type="text" readonly />
 									</div>
 								</div>
 							</c:forEach>
@@ -123,6 +123,17 @@
 														placeholder="Security Code">
 												</div>
 											</div>
+
+
+											<div class="form-group">
+												<label class="col-sm-3 control-label" for="cvv">Use
+													Loyalty Points</label>
+												<div class="col-sm-3">
+													<input type="radio" name="discount" value="yes">Yes<br> 
+													<input type="radio" name="discount" value="no"> No<br>
+												</div>
+											</div>
+
 											<div class="form-group">
 												<div class="modal-footer">
 													<button type="submit" class="btn btn-primary btn-lg">Submit</button>

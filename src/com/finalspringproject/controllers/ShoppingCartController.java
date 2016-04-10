@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.finalspringproject.chainofresponsibility.CantMinusPoints;
+import com.finalspringproject.chainofresponsibility.Chain;
+import com.finalspringproject.chainofresponsibility.DontMinusPoints;
+import com.finalspringproject.chainofresponsibility.MinusPoints;
 import com.finalspringproject.entity.Book;
 import com.finalspringproject.entity.Card;
 import com.finalspringproject.entity.LineItem;
@@ -117,7 +121,8 @@ public class ShoppingCartController {
 			@RequestParam(value = "card-holder-name") String cardHolderName,
 			@RequestParam(value = "address") String address, @RequestParam(value = "card-number") String cardNumber,
 			@RequestParam(value = "cvv") String cvv, @RequestParam(value = "expiry-month") String expiryMonth,
-			@RequestParam(value = "expiry-year") String expiryYear) {
+			@RequestParam(value = "expiry-year") String expiryYear,@RequestParam(value = "discount") String request ) {
+		
 
 		User user = userService.getUser(principal.getName());
 		ShoppingCart shoppingCart = user.getShoppingCart();
@@ -132,6 +137,14 @@ public class ShoppingCartController {
 		savedAddress.add(addressClass.saveToMemento());
 		
 		
+		Chain chain1 = new MinusPoints();
+		Chain chain2 = new CantMinusPoints();
+		Chain chain3 = new DontMinusPoints();
+		
+		chain1.setNextChain(chain2);
+		chain2.setNextChain(chain3);
+		
+		chain1.calculate(request, user);
 		
 		for (LineItem lineItem : shoppingCart.getLineItem()) {
 			int quan = lineItem.getQuantity();
@@ -177,6 +190,7 @@ public class ShoppingCartController {
 		User user = userService.getUser(principal.getName());
 		user.setShippingAddress(address.restoreFromMemento(savedAddress.get(1)));
 		userService.saveOrUpdate(user);
+		savedAddress.clear();
 		return "home";
 		
 	}
@@ -187,6 +201,7 @@ public class ShoppingCartController {
 		User user = userService.getUser(principal.getName());
 		user.setShippingAddress(address.restoreFromMemento(savedAddress.get(0)));
 		userService.saveOrUpdate(user);
+		savedAddress.clear();
 		return "home";
 		
 	}

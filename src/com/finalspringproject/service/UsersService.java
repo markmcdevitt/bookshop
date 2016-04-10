@@ -1,5 +1,6 @@
 package com.finalspringproject.service;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +10,18 @@ import org.springframework.stereotype.Service;
 
 import com.finalspringproject.dao.UsersDao;
 import com.finalspringproject.entity.User;
+import com.finalspringproject.iterator.BookShopIterator;
 
 
 @Service("usersService")
-public class UsersService {
+public class UsersService implements BookShopIterator {
 
+	private List<User> menuItems;
 	private UsersDao usersDao;
+	
+	public UsersService() {
+		menuItems = usersDao.getAllNormalUsers();
+	}
 
 	@Autowired
 	public void setRecipeDao(UsersDao usersDao) {
@@ -38,5 +45,13 @@ public class UsersService {
 	
 	public List<User> getAllUsers() {
 		return usersDao.getAllUsers();
+	}
+	public List<User> getAllAdminUsers() {
+		return usersDao.getAllAdminUsers();
+	}
+
+	@Override
+	public Iterator createIterator() {
+		return menuItems.iterator();
 	}
 }

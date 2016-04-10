@@ -29,6 +29,8 @@
 			access="hasRole('ROLE_ADMIN')" />
 		<security:intercept-url pattern="/editStock/*"
 			access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/allenabledusers"
+			access="hasRole('ROLE_ADMIN')" />	
 
 		<security:intercept-url pattern="/completeorder"
 			access="isAuthenticated()" />

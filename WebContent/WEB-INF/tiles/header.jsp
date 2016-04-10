@@ -27,6 +27,10 @@
 			<sec:authorize access="hasRole('ROLE_ADMIN')">
 				<li><a href="<c:url value='/allbooks'/>">Admin Book Page</a></li>
 			</sec:authorize>
+			<sec:authorize access="hasRole('ROLE_ADMIN')">
+				<li><a href="<c:url value='/allenabledusers'/>">All Enabled Users</a></li>
+			</sec:authorize>
+			
 		</ul>
 
 		<sec:authorize access="!isAuthenticated()">

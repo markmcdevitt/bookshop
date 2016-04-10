@@ -7,14 +7,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.finalspringproject.controllers.AdminController;
 import com.finalspringproject.dao.UsersDao;
 import com.finalspringproject.entity.User;
 import com.finalspringproject.iterator.BookShopIterator;
-import com.finalspringproject.iterator.IIterator;
-
-@Service("adminService")
-public class AdminService implements BookShopIterator {
+@Service("enabledUserService")
+public class EnabledUserService  implements BookShopIterator {
 
 	private UsersDao usersDao;
 	private List<User> menuItems = new ArrayList<User>();
@@ -26,8 +23,8 @@ public class AdminService implements BookShopIterator {
 
 	@Override
 	public Iterator createIterator() {
-		menuItems = usersDao.getAllAdminUsers();
+		menuItems = usersDao.getAllNormalUsers();
 		return menuItems.iterator();
 	}
-
+	
 }

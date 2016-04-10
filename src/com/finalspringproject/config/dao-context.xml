@@ -45,6 +45,7 @@
 					<value>com.finalspringproject.entity</value>
 					<value>com.finalspringproject.strategy</value>
 					<value>com.finalspringproject.memento</value>
+					<value>com.finalspringproject.iterator</value>
 				</list>
 			</property>
 		</bean>

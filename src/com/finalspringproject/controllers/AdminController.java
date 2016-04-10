@@ -16,17 +16,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.finalspringproject.entity.Book;
 import com.finalspringproject.entity.PurchaseHistory;
 import com.finalspringproject.entity.User;
-import com.finalspringproject.iterator.BookShopIterator;
+import com.finalspringproject.service.AdminService;
 import com.finalspringproject.service.BookService;
-import com.finalspringproject.service.ReviewService;
+import com.finalspringproject.service.EnabledUserService;
 import com.finalspringproject.service.UsersService;
 
 @Controller
 public class AdminController {
-	
-	
+
 	private UsersService usersService;
 	private BookService bookService;
+	private AdminService adminService;
+	private EnabledUserService enabledUserService;
+	private List<User> allAdminUsers = new ArrayList<User>();
+
+	@Autowired
+	public void setEnabledUserService(EnabledUserService enabledUserService) {
+		this.enabledUserService = enabledUserService;
+	}
+
+	@Autowired
+	public void setAdminService(AdminService adminService) {
+		this.adminService = adminService;
+	}
 
 	@Autowired
 	public void setUsersService(UsersService usersService) {
@@ -36,6 +48,22 @@ public class AdminController {
 	@Autowired
 	public void setBookService(BookService bookService) {
 		this.bookService = bookService;
+	}
+
+	@RequestMapping("/allenabledusers")
+	public String allAdminUsers(Model model) {
+
+		
+
+		Iterator itr = adminService.createIterator();
+		Iterator itr2 = adminService.createIterator();
+
+		allAdminUsers.addAll(iterateList(itr));
+		allAdminUsers.addAll(iterateList(itr2));
+		
+		model.addAttribute("users", allAdminUsers);
+		return "admin";
+
 	}
 
 	@RequestMapping("/admin")
@@ -70,8 +98,9 @@ public class AdminController {
 		model.addAttribute("purchaseHistories", purchaseHistories);
 		return "userpage";
 	}
+
 	@RequestMapping("/editStock/{title}")
-	public String editStock(Model model,@PathVariable String title,@RequestParam(value = "quantity") String quan){
+	public String editStock(Model model, @PathVariable String title, @RequestParam(value = "quantity") String quan) {
 		List<Book> book = bookService.getBook(title);
 		book.get(0).getStock().setStockLevel(Integer.parseInt(quan));
 		bookService.saveOrUpdate(book.get(0));
@@ -79,8 +108,18 @@ public class AdminController {
 		List<Book> books = bookService.getBooks();
 		model.addAttribute("books", books);
 		return "allbooks";
-		
+
 	}
 
+	public List<User> iterateList(Iterator itr){
+		while (itr.hasNext()) {
+			User i = (User) itr.next();
 
+			System.out.println(i.getUsername());
+			if (i.isEnabled()) {
+				allAdminUsers.add(i);
+			}
+		}
+		return allAdminUsers;
+	}
 }

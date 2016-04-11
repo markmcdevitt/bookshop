@@ -7,9 +7,6 @@ public class LimitedStockLevel implements State {
 		System.out.println("Stock is below 10");
 		double price = 1.5;
 		sc.changeState(new NormalStockLevel());
-		return price; 
-		
-		
+		return price; 	
 	}
-
 }

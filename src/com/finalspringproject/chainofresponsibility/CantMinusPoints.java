@@ -17,6 +17,8 @@ public class CantMinusPoints implements Chain {
 	public void calculate(String request, User user) {
 		if(request.equals("yes")&&user.getLoyaltyPoints()<10){
 			System.out.println("Not enough points");
+			double newPoints = user.getShoppingCart().getTotalCost()+user.getLoyaltyPoints();
+			user.setLoyaltyPoints((int) newPoints);
 		}else{
 			System.out.println("through the second chain");
 			nextInChain.calculate(request, user);

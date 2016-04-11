@@ -49,8 +49,7 @@ public class ShoppingCartController {
 
 		String username = principal.getName();
 		User user = userService.getUser(username);// have the user
-		List<Book> book = bookService.getBook(title);// have the book list and
-														// book
+		List<Book> book = bookService.getBook(title);
 		
 
 		book.get(0).setPrice(updatedPrice(book.get(0),title));

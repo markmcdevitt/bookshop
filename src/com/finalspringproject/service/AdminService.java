@@ -7,11 +7,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.finalspringproject.controllers.AdminController;
 import com.finalspringproject.dao.UsersDao;
 import com.finalspringproject.entity.User;
 import com.finalspringproject.iterator.BookShopIterator;
-import com.finalspringproject.iterator.IIterator;
 
 @Service("adminService")
 public class AdminService implements BookShopIterator {

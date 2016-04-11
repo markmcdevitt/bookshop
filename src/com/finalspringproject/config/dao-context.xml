@@ -48,6 +48,7 @@
 					<value>com.finalspringproject.iterator</value>
 					<value>com.finalspringproject.chainofresponsibility</value>
 					<value>com.finalspringproject.visitor</value>
+					<value>com.finalspringproject.state</value>
 				</list>
 			</property>
 		</bean>

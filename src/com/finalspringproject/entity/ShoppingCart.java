@@ -55,6 +55,4 @@ public class ShoppingCart implements Visitable{
 	public double accept(Visitor visitor) {
 		return visitor.charge(this);
 	}
-
-
 }

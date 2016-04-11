@@ -20,6 +20,10 @@ public class BookService {
 	public List<Book> getBooks() {
 		return bookDao.getBooks();
 	}
+	
+	public Book getBookObj(String title){
+		return bookDao.getBookObj(title);
+	}
 
 	public List<Book> getBook(String title){
 		return bookDao.getBook(title);

@@ -1,6 +1,7 @@
 package com.finalspringproject.controllers;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -16,6 +17,8 @@ import com.finalspringproject.entity.Book;
 import com.finalspringproject.entity.User;
 import com.finalspringproject.service.BookService;
 import com.finalspringproject.service.UsersService;
+import com.finalspringproject.state.NormalStockLevel;
+import com.finalspringproject.state.StateContext;
 
 @Controller
 public class BookController {
@@ -42,8 +45,20 @@ public class BookController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/book/{title}")
 	public String showSpecificRecipe(@PathVariable String title, Model model, Principal principal) {
-		List<Book> book = bookService.getBook(title);
-		model.addAttribute("book", book);
+		StateContext sc = new StateContext();
+		Book book = bookService.getBookObj(title);
+		System.out.println("wtf is going on "+book.toString());
+	
+		sc.changeState(new NormalStockLevel());
+		
+		if(book.getStock().getStockLevel()<10){
+			double newPrice= sc.saySomething();
+			book.setPrice(book.getPrice()*newPrice);
+		}
+		bookService.saveOrUpdate(book);
+		List<Book> books = new ArrayList<Book>();
+		books.add(book);
+		model.addAttribute("book", books);
 		return "book";
 
 	}

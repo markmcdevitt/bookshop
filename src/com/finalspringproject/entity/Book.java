@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.finalspringproject.state.State;
+
 @Entity
 public class Book {
 
@@ -31,7 +33,7 @@ public class Book {
 	private Stock Stock;
 
 	public Book() {
-
+		
 	}
 
 	public Book(String title, String author, String category, double price, String image, String totalRating,

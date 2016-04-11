@@ -53,4 +53,11 @@ public class BookDao {
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();	
 	}
+
+	public Book getBookObj(String title) {
+			Criteria crit = session().createCriteria(Book.class);
+			crit.add(Restrictions.eq("title", title));
+			crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			return (Book) crit.uniqueResult();
+		}
 }

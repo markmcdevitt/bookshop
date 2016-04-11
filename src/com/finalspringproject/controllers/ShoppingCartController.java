@@ -31,18 +31,18 @@ import com.finalspringproject.memento.Address.Memento;
 import com.finalspringproject.service.BookService;
 import com.finalspringproject.service.ShoppingCartService;
 import com.finalspringproject.service.UsersService;
+import com.finalspringproject.visitor.AverageUser;
+import com.finalspringproject.visitor.FrequentUser;
+import com.finalspringproject.visitor.NewUserCharge;
 
 @Controller
 public class ShoppingCartController {
 
-	private ShoppingCartService shoppingCartService;
 	private String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
 	private BookService bookService;
 	private UsersService userService;
 	private Address address = new Address();
 	private List<Address.Memento> savedAddress = new ArrayList<Address.Memento>();
-
-
 
 	@RequestMapping(value = "/addtoshoppingcart/{title}")
 	public String addtoshoppingcart(@PathVariable String title, Model model, Principal principal,
@@ -109,6 +109,9 @@ public class ShoppingCartController {
 	@RequestMapping(value = "/shoppingcart")
 	public String shoppingcart(Model model, Principal principal) {
 		User user = userService.getUser(principal.getName());
+
+		double newCost = newTotalCost(user);
+		user.getShoppingCart().setTotalCost(newCost);
 		List<User> userList = new ArrayList<>();
 		userList.add(user);
 		model.addAttribute("user", userList);
@@ -121,31 +124,29 @@ public class ShoppingCartController {
 			@RequestParam(value = "card-holder-name") String cardHolderName,
 			@RequestParam(value = "address") String address, @RequestParam(value = "card-number") String cardNumber,
 			@RequestParam(value = "cvv") String cvv, @RequestParam(value = "expiry-month") String expiryMonth,
-			@RequestParam(value = "expiry-year") String expiryYear,@RequestParam(value = "discount") String request ) {
-		
+			@RequestParam(value = "expiry-year") String expiryYear, @RequestParam(value = "discount") String request) {
+		savedAddress.clear();
 
 		User user = userService.getUser(principal.getName());
 		ShoppingCart shoppingCart = user.getShoppingCart();
-		
-		
+
 		Address addressClass = new Address();
-		
+
 		addressClass.setAddress(user.getShippingAddress());
 		savedAddress.add(addressClass.saveToMemento());
-		
+
 		addressClass.setAddress(address);
 		savedAddress.add(addressClass.saveToMemento());
-		
-		
+
 		Chain chain1 = new MinusPoints();
 		Chain chain2 = new CantMinusPoints();
 		Chain chain3 = new DontMinusPoints();
-		
+
 		chain1.setNextChain(chain2);
 		chain2.setNextChain(chain3);
-		
+
 		chain1.calculate(request, user);
-		
+
 		for (LineItem lineItem : shoppingCart.getLineItem()) {
 			int quan = lineItem.getQuantity();
 			Book book = lineItem.getBook();
@@ -178,50 +179,40 @@ public class ShoppingCartController {
 
 		List<User> userList = new ArrayList<User>();
 		userList.add(user);
-		model.addAttribute("savedAddress",savedAddress);
+		model.addAttribute("savedAddress", savedAddress);
 		model.addAttribute("user", userList);
 		return "receipt";
 
 	}
 
-	@RequestMapping(value="/newaddress")
-	public String newAddress(Model model, Principal principal){
+	@RequestMapping(value = "/newaddress")
+	public String newAddress(Model model, Principal principal) {
 
 		User user = userService.getUser(principal.getName());
 		user.setShippingAddress(address.restoreFromMemento(savedAddress.get(1)));
 		userService.saveOrUpdate(user);
-		savedAddress.clear();
 		return "home";
-		
+
 	}
-	
-	@RequestMapping(value="/restoreaddress")
-	public String restoreAddress(Model model, Principal principal){
-		
+
+	@RequestMapping(value = "/restoreaddress")
+	public String restoreAddress(Model model, Principal principal) {
 		User user = userService.getUser(principal.getName());
 		user.setShippingAddress(address.restoreFromMemento(savedAddress.get(0)));
 		userService.saveOrUpdate(user);
-		savedAddress.clear();
 		return "home";
-		
 	}
-	
+
 	@RequestMapping(value = "/shippingaddress")
 	public String shippingaddress(Model model, Principal principal) {
 		User user = userService.getUser(principal.getName());
+		double newCost = newTotalCost(user);
+		user.getShoppingCart().setTotalCost(newCost);
+		userService.saveOrUpdate(user);
 		List<User> userList = new ArrayList<>();
 		userList.add(user);
 		model.addAttribute("user", userList);
-		System.out.println(userList.size());
-		for (User u : userList) {
-			System.out.println(u.toString());
-		}
 		return "shippingaddress";
-	}
-
-	@Autowired
-	public void setShoppingCartService(ShoppingCartService shoppingCartService) {
-		this.shoppingCartService = shoppingCartService;
 	}
 
 	@Autowired
@@ -232,6 +223,24 @@ public class ShoppingCartController {
 	@Autowired
 	public void setUserService(UsersService userService) {
 		this.userService = userService;
+	}
+
+	public double newTotalCost(User user) {
+
+		double newTotalCost;
+		ShoppingCart cart = user.getShoppingCart();
+		int phSize = user.getPurchaseHistory().size();
+		if (phSize == 0) {
+			NewUserCharge newUserCharge = new NewUserCharge();
+			newTotalCost = cart.accept(newUserCharge);
+		} else if (phSize <= 3) {
+			AverageUser averageUser = new AverageUser();
+			newTotalCost = cart.accept(averageUser);
+		} else {
+			FrequentUser frequentUser = new FrequentUser();
+			newTotalCost = cart.accept(frequentUser);
+		}
+		return newTotalCost;
 	}
 
 }

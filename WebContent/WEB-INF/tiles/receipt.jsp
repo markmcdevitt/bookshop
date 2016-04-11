@@ -30,7 +30,7 @@
 		<td><b>Card Holders Name</b></td>
 		<td><b>Card Number</b></td>
 		<td><b>Expiry date</b></td>
-		<td><b>Total Price</b></td>
+		<td><b>Total Price After Tax</b></td>
 
 	</tr>
 	<c:forEach var="user" items="${user}">

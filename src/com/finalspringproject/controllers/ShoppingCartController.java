@@ -111,8 +111,13 @@ public class ShoppingCartController {
 	public String shoppingcart(Model model, Principal principal) {
 		User user = userService.getUser(principal.getName());
 
-		double newCost = newTotalCost(user);
-		user.getShoppingCart().setTotalCost(newCost);
+		try {
+			double newCost = newTotalCost(user);
+			user.getShoppingCart().setTotalCost(newCost);
+		} catch (Exception e) {
+			
+		}
+		
 		List<User> userList = new ArrayList<>();
 		userList.add(user);
 		model.addAttribute("user", userList);

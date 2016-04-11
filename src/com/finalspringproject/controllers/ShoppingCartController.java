@@ -9,10 +9,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.finalspringproject.chainofresponsibility.CantMinusPoints;
@@ -27,10 +25,10 @@ import com.finalspringproject.entity.ShoppingCart;
 import com.finalspringproject.entity.Stock;
 import com.finalspringproject.entity.User;
 import com.finalspringproject.memento.Address;
-import com.finalspringproject.memento.Address.Memento;
 import com.finalspringproject.service.BookService;
-import com.finalspringproject.service.ShoppingCartService;
 import com.finalspringproject.service.UsersService;
+import com.finalspringproject.state.NormalStockLevel;
+import com.finalspringproject.state.StateContext;
 import com.finalspringproject.visitor.AverageUser;
 import com.finalspringproject.visitor.FrequentUser;
 import com.finalspringproject.visitor.NewUserCharge;
@@ -43,6 +41,7 @@ public class ShoppingCartController {
 	private UsersService userService;
 	private Address address = new Address();
 	private List<Address.Memento> savedAddress = new ArrayList<Address.Memento>();
+	private StateContext sc = new StateContext();
 
 	@RequestMapping(value = "/addtoshoppingcart/{title}")
 	public String addtoshoppingcart(@PathVariable String title, Model model, Principal principal,
@@ -52,6 +51,10 @@ public class ShoppingCartController {
 		User user = userService.getUser(username);// have the user
 		List<Book> book = bookService.getBook(title);// have the book list and
 														// book
+		
+
+		book.get(0).setPrice(updatedPrice(book.get(0),title));
+
 		int stock = book.get(0).getStock().getStockLevel();
 
 		int quantity = Integer.parseInt(quan);// have the quantity
@@ -92,9 +95,7 @@ public class ShoppingCartController {
 
 		double totalPrice = 0;
 		for (LineItem l : allLineItems) {
-			System.out.println("quantity: " + l.getQuantity() + " price: " + l.getBook().getPrice());
 			totalPrice += l.getQuantity() * l.getBook().getPrice();
-			System.out.println("total: " + totalPrice);
 		}
 
 		ShoppingCart shoppingCart = new ShoppingCart(totalPrice, allLineItems);
@@ -243,4 +244,17 @@ public class ShoppingCartController {
 		return newTotalCost;
 	}
 
+	public double updatedPrice(Book book, String title){
+		if (book.getTitle().equals(title)) {
+			if (book.getStock().getStockLevel() < 10) {
+				double newPrice = sc.saySomething();
+				book.setPrice(book.getPrice() * newPrice);
+			} else if (book.getStock().getStockLevel() > 10) {
+				sc.changeState(new NormalStockLevel());
+				double newPrice = sc.saySomething();
+				book.setPrice(book.getPrice() * newPrice);
+			}
+		}
+		return book.getPrice();
+	}
 }

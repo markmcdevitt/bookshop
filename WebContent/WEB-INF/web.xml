@@ -15,12 +15,12 @@
 	<servlet>
 		<description></description>
 		<display-name>paddybookshop</display-name>
-		<servlet-name>recipe</servlet-name>
+		<servlet-name>paddybookshop</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>recipe</servlet-name>
+		<servlet-name>paddybookshop</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 	<description>Spring database</description>

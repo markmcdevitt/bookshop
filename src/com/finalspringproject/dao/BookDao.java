@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.finalspringproject.entity.Book;
-import com.finalspringproject.strategy.Strategy;
 
 @Transactional
 @Repository

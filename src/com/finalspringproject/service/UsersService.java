@@ -1,17 +1,13 @@
 package com.finalspringproject.service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import com.finalspringproject.dao.UsersDao;
 import com.finalspringproject.entity.User;
-import com.finalspringproject.iterator.BookShopIterator;
 
 @Service("usersService")
 public class UsersService {

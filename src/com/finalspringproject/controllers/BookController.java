@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.finalspringproject.entity.Book;
-import com.finalspringproject.entity.User;
 import com.finalspringproject.service.BookService;
 import com.finalspringproject.service.UsersService;
 import com.finalspringproject.state.NormalStockLevel;
@@ -25,6 +24,7 @@ public class BookController {
 
 	private BookService bookService;
 	private UsersService userService;
+	private boolean state = false;
 
 	@Autowired
 	public void setUserService(UsersService userService) {
@@ -40,24 +40,32 @@ public class BookController {
 	public String showBooks(Model model) {
 		List<Book> books = bookService.getBooks();
 		model.addAttribute("books", books);
+
 		return "allbooks";
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/book/{title}")
 	public String showSpecificRecipe(@PathVariable String title, Model model, Principal principal) {
 		StateContext sc = new StateContext();
-		Book book = bookService.getBookObj(title);
-		System.out.println("wtf is going on "+book.toString());
-	
-		sc.changeState(new NormalStockLevel());
-		
-		if(book.getStock().getStockLevel()<10){
-			double newPrice= sc.saySomething();
-			book.setPrice(book.getPrice()*newPrice);
-		}
-		bookService.saveOrUpdate(book);
+
+		List<Book> books2 = bookService.getBooks();
 		List<Book> books = new ArrayList<Book>();
-		books.add(book);
+
+		for (Book b : books2) {
+			if (b.getTitle().equals(title)) {
+				books.add(b);
+				if (b.getStock().getStockLevel() < 10&&!state) {
+					double newPrice = sc.saySomething();
+					b.setPrice(b.getPrice() * newPrice);
+					System.out.println("in the if");
+				} else if (b.getStock().getStockLevel() > 10) {
+					sc.changeState(new NormalStockLevel());
+					double newPrice = sc.saySomething();
+					b.setPrice(b.getPrice() * newPrice);
+					System.out.println("in the if2");
+				}
+			}
+		}
 		model.addAttribute("book", books);
 		return "book";
 
@@ -76,7 +84,7 @@ public class BookController {
 		model.addAttribute("books", books);
 		return "allbooks";
 	}
-	
+
 	@RequestMapping("/author/alphabetical")
 	public String alphabeticalAuthor(Model model) {
 		List<Book> books = bookService.getBooks();
@@ -90,7 +98,7 @@ public class BookController {
 		model.addAttribute("books", books);
 		return "allbooks";
 	}
-	
+
 	@RequestMapping("/rating/alphabetical")
 	public String alphabeticalRating(Model model) {
 		List<Book> books = bookService.getBooks();
@@ -98,7 +106,8 @@ public class BookController {
 		Collections.sort(books, new Comparator<Book>() {
 			@Override
 			public int compare(final Book object1, final Book object2) {
-				return Double.compare(Double.parseDouble(object2.getTotalRating()),Double.parseDouble(object1.getTotalRating()));
+				return Double.compare(Double.parseDouble(object2.getTotalRating()),
+						Double.parseDouble(object1.getTotalRating()));
 			}
 		});
 		model.addAttribute("books", books);

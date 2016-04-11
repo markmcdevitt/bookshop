@@ -5,9 +5,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.finalspringproject.state.LimitedStockLevel;
-import com.finalspringproject.state.State;
-
 @Entity
 public class Stock {
 

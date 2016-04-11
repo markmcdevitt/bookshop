@@ -3,6 +3,10 @@ package com.finalspringproject.state;
 public class StateContext {
 
 	private State currentState;
+	
+	public StateContext(){
+		currentState = new LimitedStockLevel();
+	}
 
 	public void changeState(State newState) {
 		this.currentState = newState;

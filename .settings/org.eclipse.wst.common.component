@@ -2,7 +2,7 @@
     <wb-module deploy-name="FinalSpringProject2.0">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <property name="context-root" value="recipes"/>
         <property name="java-output-path" value="/FinalSpringProject2.0/build/classes"/>
+        <property name="context-root" value="paddybookshop"/>
     </wb-module>
 </project-modules>

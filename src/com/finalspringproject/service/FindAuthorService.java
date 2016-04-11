@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.finalspringproject.dao.BookAuthorDao;
-import com.finalspringproject.dao.BookDao;
-import com.finalspringproject.dao.UsersDao;
 import com.finalspringproject.entity.Book;
-import com.finalspringproject.entity.User;
 import com.finalspringproject.strategy.Strategy;
 
 @Service("findAuthorService")

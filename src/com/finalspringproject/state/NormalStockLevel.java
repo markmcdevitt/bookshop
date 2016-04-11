@@ -1,7 +1,5 @@
 package com.finalspringproject.state;
 
-import com.finalspringproject.entity.Book;
-
 public class NormalStockLevel implements State {
 
 	
@@ -9,7 +7,7 @@ public class NormalStockLevel implements State {
 	public double changePrice(StateContext sc) {
 		System.out.println("Normal Stock");
 		sc.changeState(new LimitedStockLevel());
-		return 0.0;
+		return 1.0;
 	}
 
 }

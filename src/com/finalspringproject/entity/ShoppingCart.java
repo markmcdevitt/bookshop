@@ -9,8 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.finalspringproject.visitor.Visitable;
+import com.finalspringproject.visitor.Visitor;
+
 @Entity
-public class ShoppingCart {
+public class ShoppingCart implements Visitable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
@@ -48,6 +51,10 @@ public class ShoppingCart {
 	public String toString() {
 		return "ShoppingCart [id=" + id + ", TotalCost=" + TotalCost + ", lineItem=" + lineItem + "]";
 	}
-	
+
+	public double accept(Visitor visitor) {
+		return visitor.charge(this);
+	}
+
 
 }

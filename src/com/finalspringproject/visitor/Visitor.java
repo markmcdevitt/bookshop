@@ -1,10 +1,8 @@
 package com.finalspringproject.visitor;
 
-import com.finalspringproject.entity.Book;
+import com.finalspringproject.entity.ShoppingCart;
 
 public interface Visitor {
 
-	public double charge(StockSmallCharge stockSmallCharge );
-
-	public double charge(StockBigCharge stockBigCharge);
+	public double charge(ShoppingCart cart);
 }
